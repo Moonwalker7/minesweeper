@@ -1,0 +1,25 @@
+
+#dGameTitle {
+	margin-top: 20px;
+	font-size: 35px;
+	color: black;
+	padding-left: 12%
+
+}
+
+#dGameWindow {
+	width: 500px;
+	height: 650px;
+	border: solid grey;
+	padding: 10px;
+	border-radius: 15px;
+	border-color: black;
+}
+
+#dUpper {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	background-color: lightyellow;
+}
