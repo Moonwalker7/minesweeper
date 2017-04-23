@@ -82,6 +82,29 @@ var getRandomNum = function( max ){
 	return Math.floor( Math.random() * (iMax - iMin)) + iMin;
 }
 
+var setText = function( strInfo ){
+
+	var dInfo = document.getElementById( "info" );
+	dInfo.innerText = "";
+	dInfo.innerText = strInfo;
+}
+
+var setMineCount = function( row, col, level ){
+
+	var iMinimumGridCells = 25;
+
+	if( level === 1 ){
+		return Math.abs( 2 * ((row * col) / iMinimumGridCells) );
+	}
+	else if( level === 2 ){
+		return Math.abs( 4 * ((row * col) / iMinimumGridCells) );
+	}
+	else if( level === 3 ){
+		return Math.abs( 6 * ((row * col) / iMinimumGridCells) );
+	}
+	return 0;
+}
+
 //Init Function
 
 var init = function(){
@@ -89,8 +112,12 @@ var init = function(){
 	var iGridSizeCol = 20;
 	var iGridSizeRow = 20;
 	var lstGridCoordinates = [];
+	var dMine = document.getElementById( "mine" );
 
+	gGame['iMinesCount'] = setMineCount( iGridSizeRow, iGridSizeCol, 1 );
+	dMine.innerText = gGame['iMinesCount'];
 	lstGridCoordinates = createGrid( iGridSizeRow, iGridSizeCol );
+	setText( "Let the game begin !" );
 }
 
 init();
