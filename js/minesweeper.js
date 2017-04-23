@@ -9,7 +9,7 @@ var gGame = {
 	'lstPlacedMinesLocation' : [],
 	'timer' : {
 		'minutes' : 0,
-		'seconds' : 0
+		'seconds' : 0,
 		} 
 
 };
@@ -105,6 +105,24 @@ var setMineCount = function( row, col, level ){
 	return 0;
 }
 
+var startTimer = function(){
+	
+	var timer = document.getElementById( "timer" );	
+	timer.innerText = null;
+	
+
+	if( gGame['timer']['seconds'] === 59 ){
+		gGame['timer']['seconds'] = 0;
+		gGame['timer']['minutes'] += 1;
+		
+		timer.innerText = gGame['timer']['minutes'] + ":" + gGame['timer']['seconds'];
+	}
+	else{
+		gGame['timer']['seconds'] += 1;
+		timer.innerText = gGame['timer']['minutes'] + ":" + gGame['timer']['seconds'];
+	}
+}
+
 //Init Function
 
 var init = function(){
@@ -113,11 +131,12 @@ var init = function(){
 	var iGridSizeRow = 20;
 	var lstGridCoordinates = [];
 	var dMine = document.getElementById( "mine" );
-
+	setInterval( startTimer, 1000 );
 	gGame['iMinesCount'] = setMineCount( iGridSizeRow, iGridSizeCol, 1 );
 	dMine.innerText = gGame['iMinesCount'];
 	lstGridCoordinates = createGrid( iGridSizeRow, iGridSizeCol );
 	setText( "Let the game begin !" );
+	startTimer();
 }
 
 init();
