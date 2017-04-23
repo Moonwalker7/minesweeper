@@ -72,6 +72,16 @@ var createButton = function( iX, iY ){
 
 	return button;
 }
+
+var getRandomNum = function( max ){
+	//Reference from MDN
+
+	var iMin = 0;
+	var iMax = Math.floor( max );
+
+	return Math.floor( Math.random() * (iMax - iMin)) + iMin;
+}
+
 //Init Function
 
 var init = function(){
