@@ -10,6 +10,7 @@ var gGame = {
 	'timer' : {
 		'minutes' : 0,
 		'seconds' : 0,
+		'timeout' : 0
 		} 
 
 };
@@ -21,7 +22,7 @@ var createGrid = function( iGridSizeRow, iGridSizeCol ){
 
 	var lstGridCoordinates = [];
 	var divGrid = document.getElementById( "dGrid" );
-	divGrid,innerText = "";
+	divGrid.innerText = "";
 
 	gGame['lstGrid'] = new Array( iGridSizeRow );
 	for ( var x = 0; x < iGridSizeRow; x++ ) {
@@ -37,11 +38,30 @@ var createGrid = function( iGridSizeRow, iGridSizeCol ){
 				
 				lstGridCoordinates.push( button );				
 			}
-
 			divGrid.appendChild( divRow );
 	}
-
 	return lstGridCoordinates;
+}
+
+var plantMines = function( lstGridCoordinates ){
+
+	gGame['lstPlacedMinesLocation'] = new Array();
+
+	for( var iCount = 0; iCount < gGame['iMinesCount']; iCount++ ){
+
+			var iRandomNum = getRandomNum( lstGridCoordinates.length );
+			var iMineLocation = lstGridCoordinates[iRandomNum];
+			
+			//Plant a mine
+			gGame['lstGrid'][iMineLocation.x][iMineLocation.y].hasValue = -1;
+			
+			//Add the location to the list
+			gGame['lstPlacedMinesLocation'].push( iMineLocation );
+
+			//splice the randomly chosen index for unique random number generation
+			lstGridCoordinates.splice( iRandomNum, 1 );
+			
+		}
 }
 
 //Event Functions
@@ -123,6 +143,44 @@ var startTimer = function(){
 	}
 }
 
+var stopTimer = function(){
+	clearInterval( timer['timeout'] );
+}
+
+var isValidCell = function( x, y ){
+
+	try{
+		//console.log( "--> " + gGame['lstGrid'][x][y]);
+
+		if( (x >= 0 && x <= gGame['iMaxGridCoordinateX']) &&
+			(y >= 0 && y <= gGame['iMaxGridCoordinateY']) && 
+			( gGame['lstGrid'][x][y] !== undefined) ){
+
+			return true;
+		}	
+	}
+	catch( TypeError ){
+		console.log( "TypeError: " + x + " " + y);
+	}
+
+	return false;
+}
+
+var showMines = function(){
+	// Display all the mines
+	
+	var iMinesListLength = gGame['lstPlacedMinesLocation'].length;
+	for ( var iMineLocation = 0; iMineLocation < iMinesListLength; iMineLocation++ ) {
+		
+		var iMine = gGame['lstPlacedMinesLocation'][iMineLocation];
+		var button = gGame['lstGrid'][iMine.x][iMine.y];
+		button.isVisible = true;
+
+		button.style.background = "red";
+		button.innerText = "#";
+	}
+}
+
 //Init Function
 
 var init = function(){
@@ -130,13 +188,17 @@ var init = function(){
 	var iGridSizeCol = 20;
 	var iGridSizeRow = 20;
 	var lstGridCoordinates = [];
+	
 	var dMine = document.getElementById( "mine" );
-	setInterval( startTimer, 1000 );
+
+	timer['timeout'] = setInterval( startTimer, 1000 );
 	gGame['iMinesCount'] = setMineCount( iGridSizeRow, iGridSizeCol, 1 );
 	dMine.innerText = gGame['iMinesCount'];
+
 	lstGridCoordinates = createGrid( iGridSizeRow, iGridSizeCol );
+	plantMines( lstGridCoordinates );
+	showMines();
 	setText( "Let the game begin !" );
-	startTimer();
 }
 
 init();
