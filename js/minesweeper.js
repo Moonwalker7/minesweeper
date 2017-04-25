@@ -27,19 +27,21 @@ var createGrid = function( iGridSizeRow, iGridSizeCol ){
 	gGame['lstGrid'] = new Array( iGridSizeRow );
 	for ( var x = 0; x < iGridSizeRow; x++ ) {
 			
-			var divRow = document.createElement( "div" );
-			gGame['lstGrid'][x] = new Array( iGridSizeCol );
+		var divRow = document.createElement( "div" );
+		gGame['lstGrid'][x] = new Array( iGridSizeCol );
 
-			for ( var y = 0; y < iGridSizeCol; y++ ) {
-				
-				var button = createButton(x, y)
-				gGame['lstGrid'][x][y] = button;
-				divRow.appendChild( button );
-				
-				lstGridCoordinates.push( button );				
-			}
-			divGrid.appendChild( divRow );
+		for ( var y = 0; y < iGridSizeCol; y++ ) {
+			
+			var button = createButton(x, y)
+			gGame['lstGrid'][x][y] = button;
+			divRow.appendChild( button );
+			
+			lstGridCoordinates.push( button );				
+		}
+
+		divGrid.appendChild( divRow );
 	}
+	console.log( "Grid setup done" );
 	return lstGridCoordinates;
 }
 
@@ -49,19 +51,19 @@ var plantMines = function( lstGridCoordinates ){
 
 	for( var iCount = 0; iCount < gGame['iMinesCount']; iCount++ ){
 
-			var iRandomNum = getRandomNum( lstGridCoordinates.length );
-			var iMineLocation = lstGridCoordinates[iRandomNum];
-			
-			//Plant a mine
-			gGame['lstGrid'][iMineLocation.x][iMineLocation.y].hasValue = -1;
-			
-			//Add the location to the list
-			gGame['lstPlacedMinesLocation'].push( iMineLocation );
+		var iRandomNum = getRandomNum( lstGridCoordinates.length );
+		var iMineLocation = lstGridCoordinates[iRandomNum];
+		
+		//Plant a mine
+		gGame['lstGrid'][iMineLocation.x][iMineLocation.y].hasValue = -1;
+		
+		//Add the location to the list
+		gGame['lstPlacedMinesLocation'].push( iMineLocation );
 
-			//splice the randomly chosen index for unique random number generation
-			lstGridCoordinates.splice( iRandomNum, 1 );
-			
-		}
+		//splice the randomly chosen index for unique random number generation
+		lstGridCoordinates.splice( iRandomNum, 1 );
+	}
+	console.log( "Planted Mines" );	
 }
 
 //Event Functions
@@ -77,8 +79,9 @@ var createButton = function( iX, iY ){
 	button.isVisible = false;
 	button.isFlag = false;
 
-	button.style.width = button.style.height = "25px";
-	button.style.background = "white";
+	//button.style.width = button.style.height = "40px";
+	//button.style.background = "white";
+	//button.innerHTML = '<img src="media/images/m1.png" />';
 
 	//Left click event
 	button.onclick = function( event ){ 
@@ -177,7 +180,9 @@ var showMines = function(){
 		button.isVisible = true;
 
 		button.style.background = "red";
-		button.innerText = "#";
+		button.innerHTML = '<img src="media/images/m2.png" />';
+		
+		//button.innerText = "#";
 	}
 }
 
@@ -185,8 +190,8 @@ var showMines = function(){
 
 var init = function(){
 
-	var iGridSizeCol = 20;
-	var iGridSizeRow = 20;
+	var iGridSizeCol = 5;
+	var iGridSizeRow = 5;
 	var lstGridCoordinates = [];
 	
 	var dMine = document.getElementById( "mine" );

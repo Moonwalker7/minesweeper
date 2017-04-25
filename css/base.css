@@ -7,7 +7,7 @@
 
 }
 
-#dGameWindow {
+/*#dGameWindow {
 	width: 500px;
 	height: 650px;
 	border: solid grey;
@@ -15,11 +15,28 @@
 	border-radius: 15px;
 	border-color: black;
 }
-
+*/
 #dUpper {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
 	justify-content: space-between;
 	background-color: lightyellow;
+	font-weight: bolder;
+	font-size: 30px;
+}
+
+#dGrid button {
+
+	/*display: inline-block;
+	border-radius: 50%;
+	border: 1px solid red;*/
+	width: 50px;
+	height: 50px;
+	cursor: pointer;
+	font-weight: bolder;
+	text-align: center;
+	margin: 1px;
+
+	/*background:url( ../media/images );*/ 
 }
