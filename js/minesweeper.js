@@ -69,11 +69,26 @@ var plantMines = function( lstGridCoordinates ){
 //Event Functions
 
 var eventLeftAction = function( event ){
-	console.log( "Left Click");
+	console.log( "Left Click");	
 }
 
 var eventRightAction = function( event ){
 	console.log( "Right Click");
+
+	var button = getNode( event.target, 'BUTTON' );
+
+	if( ! button.isFlag ){
+		console.log( 'flag set');
+		button.isFlag = true;
+		//button.style.background = "cyan";
+		button.innerHTML = '<img src="media/images/f5.png" />';
+	}
+	else{
+		button.isFlag = false;
+		button.style.background = null;
+		button.innerHTML = null
+		console.log( 'flag unset');
+	}
 }
 //Utility Functions
 
@@ -191,6 +206,14 @@ var showMines = function(){
 		
 		//button.innerText = "#";
 	}
+}
+
+var getNode = function ( target, nodeName ){
+
+	while( target.nodeName !== nodeName )
+		target = target.parentNode;
+
+	return target;
 }
 
 //Init Function
