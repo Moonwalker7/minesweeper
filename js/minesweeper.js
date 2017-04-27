@@ -68,6 +68,13 @@ var plantMines = function( lstGridCoordinates ){
 
 //Event Functions
 
+var eventLeftAction = function( event ){
+	console.log( "Left Click");
+}
+
+var eventRightAction = function( event ){
+	console.log( "Right Click");
+}
 //Utility Functions
 
 var createButton = function( iX, iY ){
@@ -85,14 +92,14 @@ var createButton = function( iX, iY ){
 
 	//Left click event
 	button.onclick = function( event ){ 
-	 
+		eventLeftAction( event );	 
 	}
 
 	// Right click event
 	button.oncontextmenu = function( event ){
 		event.preventDefault();
+		eventRightAction( event );
 	}
-
 	return button;
 }
 
