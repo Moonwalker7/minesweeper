@@ -70,7 +70,7 @@ var gameTerminate = function( iFlag ){
 
 
 	stopTimer();
-	//gGame['gameOn'] = false;
+	gGame['gameOn'] = false;
 	/*
 		Re-enable/Unhide the button the button
 		change the text on start button
@@ -96,7 +96,13 @@ var eventLeftAction = function( event ){
 	console.log( "Left Click");	
 
 	var button = getNode( event.target, 'BUTTON' );
-	console.log( "button " + button);
+
+	if( ! gGame['gameOn'] || button.isVisible === true ){
+		console.log( "gameOn is disabled");
+		return;
+	}
+	//console.log( "button " + button);
+	
 	if( button.isFlag ){
 		console.log("exiting left click function, flag is set ");
 		//setText( "Flag is already set" );
@@ -111,6 +117,11 @@ var eventRightAction = function( event ){
 	console.log( "Right Click");
 
 	var button = getNode( event.target, 'BUTTON' );
+
+	if( ! gGame['gameOn']  || button.isVisible === true ){
+		console.log( "gameOn is disabled");
+		return;
+	}
 
 	if( ! button.isFlag ){
 		console.log( 'flag set');
@@ -244,7 +255,7 @@ var showMines = function(){
 		
 		var iMine = gGame['lstPlacedMinesLocation'][iMineLocation];
 		var button = gGame['lstGrid'][iMine.x][iMine.y];
-		button.isVisible = true;
+		//button.isVisible = true;
 
 		button.style.background = "red";
 		button.innerHTML = '<img src="media/images/mines/m2.png" />';
@@ -279,6 +290,7 @@ var init = function(){
 	plantMines( lstGridCoordinates );
 	showMines();
 	setText( "Let the game begin !", 1 );
+	gGame['gameOn'] = true;
 }
 
 init();
