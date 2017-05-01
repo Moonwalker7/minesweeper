@@ -66,10 +66,45 @@ var plantMines = function( lstGridCoordinates ){
 	console.log( "Planted Mines" );	
 }
 
+var gameTerminate = function( iFlag ){
+
+
+	stopTimer();
+	//gGame['gameOn'] = false;
+	/*
+		Re-enable/Unhide the button the button
+		change the text on start button
+		*/
+	if( iFlag === -1 ){
+
+		console.log("isMine" + "\n" + "Game Over :(" );
+		showMines();//send an image path.
+		//button.style.background = 'yellow';// change this to coloring only the outline of the clicked mine button
+		setText("Game Over :(");
+		
+	}
+	else if( iFlag === 0 ){
+		showMines();
+		//button.style.background = 'yellow';//same as above
+		setText("Game Won :)");
+	}
+}
+
 //Event Functions
 
 var eventLeftAction = function( event ){
 	console.log( "Left Click");	
+
+	var button = getNode( event.target, 'BUTTON' );
+	console.log( "button " + button);
+	if( button.isFlag ){
+		console.log("exiting left click function, flag is set ");
+		//setText( "Flag is already set" );
+		return;
+	}
+	else if( button.hasValue === -1 ){
+		gameTerminate( -1 );
+	}
 }
 
 var eventRightAction = function( event ){
@@ -81,7 +116,7 @@ var eventRightAction = function( event ){
 		console.log( 'flag set');
 		button.isFlag = true;
 		//button.style.background = "cyan";
-		button.innerHTML = '<img src="media/images/f5.png" />';
+		button.innerHTML = '<img src="media/images/flags/f5.png" />';
 	}
 	else{
 		button.isFlag = false;
@@ -127,7 +162,14 @@ var getRandomNum = function( max ){
 	return Math.floor( Math.random() * (iMax - iMin)) + iMin;
 }
 
-var setText = function( strInfo ){
+var setText = function( strInfo, init = 0 ){
+
+	if( init == 1 ){
+
+		var lstGridCoordinates = [];
+		var dMine = document.getElementById( "mine" );
+		dMine.innerHTML = '<img src="media/images/mines/m2.png" />' + "  " + gGame['iMinesCount'];	
+	}
 
 	var dInfo = document.getElementById( "info" );
 	dInfo.innerText = "";
@@ -146,6 +188,9 @@ var setMineCount = function( row, col, level ){
 	}
 	else if( level === 3 ){
 		return Math.abs( 6 * ((row * col) / iMinimumGridCells) );
+	}
+	else{
+		setText( "Please Choose a valid level");
 	}
 	return 0;
 }
@@ -202,7 +247,7 @@ var showMines = function(){
 		button.isVisible = true;
 
 		button.style.background = "red";
-		button.innerHTML = '<img src="media/images/m2.png" />';
+		button.innerHTML = '<img src="media/images/mines/m2.png" />';
 		
 		//button.innerText = "#";
 	}
@@ -210,6 +255,7 @@ var showMines = function(){
 
 var getNode = function ( target, nodeName ){
 
+	//console.log( "in getNode function");
 	while( target.nodeName !== nodeName )
 		target = target.parentNode;
 
@@ -222,18 +268,17 @@ var init = function(){
 
 	var iGridSizeCol = 5;
 	var iGridSizeRow = 5;
-	var lstGridCoordinates = [];
 	
-	var dMine = document.getElementById( "mine" );
 
 	timer['timeout'] = setInterval( startTimer, 1000 );
-	gGame['iMinesCount'] = setMineCount( iGridSizeRow, iGridSizeCol, 1 );
-	dMine.innerText = gGame['iMinesCount'];
+	var iLevel = 1;
+	gGame['iMinesCount'] = setMineCount( iGridSizeRow, iGridSizeCol, iLevel );
+	
 
 	lstGridCoordinates = createGrid( iGridSizeRow, iGridSizeCol );
 	plantMines( lstGridCoordinates );
 	showMines();
-	setText( "Let the game begin !" );
+	setText( "Let the game begin !", 1 );
 }
 
 init();

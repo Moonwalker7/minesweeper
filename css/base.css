@@ -1,10 +1,12 @@
 
 #dGameTitle {
 	margin-top: 20px;
+	margin-bottom: 20px;
 	font-size: 35px;
 	color: black;
 	text-align: center;
 	font-weight: bolder;
+	background-color: lightblue;
 }
 
 /*#dGameWindow {
@@ -21,7 +23,7 @@
 	flex-direction: row;
 	flex-wrap: nowrap;
 	justify-content: space-between;
-	background-color: lightyellow;
+	background-color: lightblue;
 	font-weight: bolder;
 	font-size: 30px;
 }
