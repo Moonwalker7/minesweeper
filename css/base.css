@@ -46,7 +46,7 @@
 }
 
 #dGrid button:hover, #dGrid button:focus {
-	background: #356094;
-	/*border: solid 1px #2A4E77;
+	background: grey;/*#356094;
+	border: solid 1px #2A4E77;
 	*/text-decoration: none;
 }
