@@ -1,4 +1,7 @@
 
+body {
+	color: #6a6c6d;
+}
 #dGameTitle {
 	margin-top: 20px;
 	margin-bottom: 20px;
@@ -41,12 +44,13 @@
 	margin: 2px;
 	padding: 0px;
 	font-size: 50px;
+	background-color:#b7b8bc;
 
 	/*background:url( ../media/images );*/ 
 }
-
+/*
 #dGrid button:hover, #dGrid button:focus {
-	background: grey;/*#356094;
+	background: grey;#356094;
 	border: solid 1px #2A4E77;
-	*/text-decoration: none;
-}
+	text-decoration: none;
+}*/
