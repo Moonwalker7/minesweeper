@@ -6,7 +6,12 @@ var gGame = {
 	'iMaxGridCoordinateX' : 0,
 	'iMaxGridCoordinateY' : 0,
 	'lstGrid' : [],
+	'iFlagsCount' : 0,
 	'lstPlacedMinesLocation' : [],
+	'iUnopenedCellCount' :{
+		'totalCells' : 0,
+		'iFlag' : false
+	},
 	'timer' : {
 		'minutes' : 0,
 		'seconds' : 0,
@@ -109,7 +114,6 @@ var revealCells = function( object ){
 				if( nxtBlankButton.hasValue >= 1 && nxtBlankButton.isFlag === false ){
 					//console.log("inside reveal cells if 2");	
 					nxtBlankButton.isVisible = true;
-					//gGame['iUnopenedCellCount'] -= 1;
 					nxtBlankButton.innerText = nxtBlankButton.hasValue;
 					nxtBlankButton.style.background = "grey";
 				}
@@ -122,23 +126,20 @@ var revealCells = function( object ){
 		}
 
 		button.isVisible = true;
-		//gGame['iUnopenedCellCount'] -= 1;
 		button.isFlag = false;
 		button.style.background = 'grey';
 	}
 }
 
-var gameTerminate = function( iFlag ){
+var gameTerminate = function( iFlag = -2 ){
 
 	stopTimer();
 	gGame['gameOn'] = false;
 	var dStartBtn = document.getElementById( "btnStartGame" );
 	dStartBtn.innerHTML = "<h2>" + "Play Again" + "</h2>";
 	dStartBtn.style.visibility = 'visible';
-	/*
-		Re-enable/Unhide the button the button
-		change the text on start button
-		*/
+	gGame['iUnopenedCellCount']['iFlag'] = false;
+
 	if( iFlag === -1 ){
 
 		console.log("isMine" + "\n" + "Game Over :(" );
@@ -172,14 +173,13 @@ var eventLeftAction = function( event ){
 		return;
 	}
 	
-	if( unopenedCells() === 0 ){
+	if( gGame['iUnopenedCellCount']['iFlag'] === false && unopenedCells() === 0 ){
 		timer['timeout'] = setInterval( startTimer, 1000 );
 		var dStartBtn = document.getElementById( "btnStartGame" );
 		dStartBtn.style.visibility = 'visible';
 	}
 
-	operations( button );	
-	
+	operations( button );		
 }
 
 var eventRightAction = function( event ){
@@ -188,12 +188,13 @@ var eventRightAction = function( event ){
 	event.preventDefault();
 	
 	var button = getNode( event.target, 'BUTTON' );
+	var dFlag = document.getElementById( "flag" );
 
 	if( ! gGame['gameOn']  || button.isVisible === true ){
 		console.log( "gameOn is disabled");
 		return;
 	}
-	else if( unopenedCells() === 0 ){
+	else if( gGame['iUnopenedCellCount']['iFlag'] === false && unopenedCells() === 0 ){
 		timer['timeout'] = setInterval( startTimer, 1000 );
 		var dStartBtn = document.getElementById( "btnStartGame" );
 		dStartBtn.style.visibility = 'visible';
@@ -204,13 +205,17 @@ var eventRightAction = function( event ){
 		button.isFlag = true;
 		//button.isVisible = false;
 		//button.style.background = "cyan";
+		gGame['iFlagsCount'] += 1;
 		button.innerHTML = '<img src="media/images/flags/f4.png" />';
+		dFlag.innerHTML = '<img src="media/images/flags/f12.png" />' + "  " + gGame['iFlagsCount'];
 	}
 	else{
 		button.isFlag = false;
+		gGame['iFlagsCount'] -= 1;
 		//button.isVisible = true;
 		button.style.background = null;
 		button.innerHTML = null
+		dFlag.innerHTML = '<img src="media/images/flags/f12.png" />' + "  " + gGame['iFlagsCount'];
 		console.log( 'flag unset');
 	}
 }
@@ -235,7 +240,7 @@ var operations = function( button ){
 			button.style.background = 'grey';
 		}
 		
-		var unopened = Math.abs( (gGame['iUnopenedCellCount']) - unopenedCells() );
+		var unopened = Math.abs( (gGame['iUnopenedCellCount']['totalCells']) - unopenedCells() );
 		console.log("unopened: " + unopened );
 		if (unopened === gGame['iMinesCount']){
 			console.log("Game Won");
@@ -387,7 +392,16 @@ var setText = function( strInfo, init = 0 ){
 
 		var lstGridCoordinates = [];
 		var dMine = document.getElementById( "mine" );
-		dMine.innerHTML = '<img src="media/images/mines/m2.png" />' + "  " + gGame['iMinesCount'];	
+		dMine.innerHTML = '<img src="media/images/mines/m2.png" />' + "  " + gGame['iMinesCount'];
+
+		var dFlag = document.getElementById( "flag" );
+		dFlag.innerHTML = '<img src="media/images/flags/f12.png" />' + "  " + gGame['iFlagsCount'];
+
+		var dTimer = document.getElementById( "timer" );
+		gGame['timer']['minutes'] = 0;
+		gGame['timer']['seconds'] = 0;
+		gGame['timer']['timeout'] = 0;
+		timer.innerText = gGame['timer']['minutes'] + ":" + gGame['timer']['seconds'];
 	}
 
 	var dInfo = document.getElementById( "info" );
@@ -398,20 +412,22 @@ var setText = function( strInfo, init = 0 ){
 var setMineCount = function( row, col, level ){
 
 	var iMinimumGridCells = 25;
+	var iMines = 0;
 
 	if( level === 1 ){
-		return Math.abs( 2 * ((row * col) / iMinimumGridCells) );
+		iMines = ( 2 * ((row * col) / iMinimumGridCells));
 	}
 	else if( level === 2 ){
-		return Math.abs( 4 * ((row * col) / iMinimumGridCells) );
+		iMines = ( 4 * ((row * col) / iMinimumGridCells));
 	}
 	else if( level === 3 ){
-		return Math.abs( 6 * ((row * col) / iMinimumGridCells) );
+		iMines = ( 6 * ((row * col) / iMinimumGridCells));
 	}
 	else{
 		setText( "Please Choose a valid level");
 	}
-	return 0;
+
+	return Math.ceil( iMines );
 }
 
 var startTimer = function(){
@@ -489,7 +505,8 @@ var getNode = function ( target, nodeName ){
 var unopenedCells = function(){
 	
 	var iCount = 0;
-
+	gGame['iUnopenedCellCount']['iFlag'] = true;
+	
 	for( var i = 0; i < gGame['iMaxGridCoordinateX']; i++ ){
 
 		for( var j = 0; j < gGame['iMaxGridCoordinateY']; j++ ){
@@ -511,9 +528,9 @@ var setupGame = function( iGridSizeRows, iGridSizeCols, iLevel ){
 
 	gGame['iMaxGridCoordinateX'] = iGridSizeRows;
 	gGame['iMaxGridCoordinateY'] = iGridSizeCols;
-	gGame['iUnopenedCellCount'] = iGridSizeRows * iGridSizeCols;
-	gGame['iMinesCount'] = Math.abs( setMineCount( iGridSizeRows, iGridSizeCols, iLevel ));
-	console.log( "mines: " + gGame['iMinesCount']);
+	gGame['iUnopenedCellCount']['totalCells'] = iGridSizeRows * iGridSizeCols;
+	gGame['iMinesCount'] = setMineCount( iGridSizeRows, iGridSizeCols, iLevel );
+	console.log( "mines2: " + gGame['iMinesCount']);
 
 	lstGridCoordinates = createGrid( iGridSizeRows, iGridSizeCols );
 	plantMines( lstGridCoordinates );
@@ -524,23 +541,37 @@ var setupGame = function( iGridSizeRows, iGridSizeCols, iLevel ){
 
 var init = function(){
 
-	var iGridSizeCols = 5;
-	var iGridSizeRows = 5;
+	var iGridSizeCols = 7;
+	var iGridSizeRows = 6;
 	var iLevel = 1;
-	
-	var dStartBtn = document.getElementById( "btnStartGame" );
-	dStartBtn.style.visibility = 'hidden';
 		
 	setupGame( iGridSizeRows, iGridSizeCols, iLevel );	
 
 	setText( "Let the game begin !", 1 );
-	
+	dStartBtn.style.visibility = 'hidden';
 	gGame['gameOn'] = true;
 }
 
-init();
+var dStartBtn = document.getElementById( "btnStartGame" );
+dStartBtn.oncontextmenu = function( event ){ event.preventDefault(); }
 
+dStartBtn.onclick = function(){
+	
+	gGame['gameOn'] = false;
+	gGame['iMinesCount'] = 0;
+	gGame['iMaxGridCoordinateX'] = 0;
+	gGame['iMaxGridCoordinateY'] = 0;
+	gGame['lstGrid'] = [];
+	gGame['lstPlacedMinesLocation'] = [];
+	gGame['iUnopenedCellCount']['totalCells'] = 0;
+	gGame['iUnopenedCellCount']['iFlag'] = false;
+	gGame['iFlagsCount'] = 0;
 
+	init();
+	stopTimer();
+}
+
+dStartBtn.click();
 
 /*
 Validations Part
@@ -553,5 +584,8 @@ Validations Part
 7. Check the start and stop timer
 8. Check for unopenedcellcount()
 9. check in different browsers
+10. Add an icon in the tab
+11. Add the difficulty dropdown
+12. Loading icon
 
 */
