@@ -130,11 +130,10 @@ var revealCells = function( object ){
 
 var gameTerminate = function( iFlag ){
 
-
 	stopTimer();
 	gGame['gameOn'] = false;
 	var dStartBtn = document.getElementById( "btnStartGame" );
-	dStartBtn.innerText = "Play Again";
+	dStartBtn.innerHTML = "<h2>" + "Play Again" + "</h2>";
 	dStartBtn.style.visibility = 'visible';
 	/*
 		Re-enable/Unhide the button the button
@@ -143,13 +142,13 @@ var gameTerminate = function( iFlag ){
 	if( iFlag === -1 ){
 
 		console.log("isMine" + "\n" + "Game Over :(" );
-		showMines();//send an image path.
+		showMines( -1 );//send an image path.
 		//button.style.background = 'yellow';// change this to coloring only the outline of the clicked mine button
 		setText("Game Over :(");
 		
 	}
 	else if( iFlag === 0 ){
-		showMines();
+		showMines( 0 );
 		//button.style.background = 'yellow';//same as above
 		setText("Game Won :)");
 	}
@@ -162,7 +161,6 @@ var eventLeftAction = function( event ){
 
 	var button = getNode( event.target, 'BUTTON' );
 
-	button.oncontextmenu = function(){ event.preventDefault(); }	
 
 	if( ! gGame['gameOn'] || button.isVisible === true ){
 		console.log( "gameOn is disabled or button is visible");
@@ -179,29 +177,9 @@ var eventLeftAction = function( event ){
 		var dStartBtn = document.getElementById( "btnStartGame" );
 		dStartBtn.style.visibility = 'visible';
 	}
-	
-	if( button.hasValue === -1 ){
-		gameTerminate( -1 );
-	}
-	else{
 
-		if( button.hasValue === 0 ){
-			//console.log("reveal");
-			revealCells( button );
-		}
-		else if( button.hasValue >= 1 ){
-			button.isVisible = true;
-			button.innerText = button.hasValue;
-			button.style.background = 'grey';
-		}
-		
-		var unopened = Math.abs( (gGame['iUnopenedCellCount']) - unopenedCells() );
-		console.log("unopened: " + unopened );
-		if (unopened === gGame['iMinesCount']){
-			console.log("Game Won");
-			gameTerminate( 0 );
-		}
-	}
+	operations( button );	
+	
 }
 
 var eventRightAction = function( event ){
@@ -226,7 +204,7 @@ var eventRightAction = function( event ){
 		button.isFlag = true;
 		//button.isVisible = false;
 		//button.style.background = "cyan";
-		button.innerHTML = '<img src="media/images/flags/f5.png" />';
+		button.innerHTML = '<img src="media/images/flags/f4.png" />';
 	}
 	else{
 		button.isFlag = false;
@@ -237,6 +215,34 @@ var eventRightAction = function( event ){
 	}
 }
 //Utility Functions
+
+var operations = function( button ){
+
+	button.oncontextmenu = function(){ event.preventDefault(); }
+
+	if( button.hasValue === -1 ){
+		gameTerminate( -1 );
+	}
+	else{
+
+		if( button.hasValue === 0 ){
+			//console.log("reveal");
+			revealCells( button );
+		}
+		else if( button.hasValue >= 1 ){
+			button.isVisible = true;
+			button.innerText = button.hasValue;
+			button.style.background = 'grey';
+		}
+		
+		var unopened = Math.abs( (gGame['iUnopenedCellCount']) - unopenedCells() );
+		console.log("unopened: " + unopened );
+		if (unopened === gGame['iMinesCount']){
+			console.log("Game Won");
+			gameTerminate( 0 );
+		}
+	}
+}
 
 var createButton = function( iX, iY ){
 	
@@ -449,7 +455,7 @@ var isValidCell = function( x, y ){
 	return false;
 }
 
-var showMines = function(){
+var showMines = function( iFlag = null ){
 	// Display all the mines
 	
 	var iMinesListLength = gGame['lstPlacedMinesLocation'].length;
@@ -458,8 +464,13 @@ var showMines = function(){
 		var iMine = gGame['lstPlacedMinesLocation'][iMineLocation];
 		var button = gGame['lstGrid'][iMine.x][iMine.y];
 		//button.isVisible = true;
-
-		//button.style.background = "red";
+		if( iFlag === -1 ){
+			button.style.background = "red";
+		}
+		else{
+			button.style.background = "blue";	
+		}
+		
 		button.innerHTML = '<img src="media/images/mines/m2.png" />';
 		
 		//button.innerText = "#";

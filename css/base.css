@@ -45,6 +45,7 @@ body {
 	padding: 0px;
 	font-size: 50px;
 	background-color:#b7b8bc;
+	border-radius: 10px;
 
 	/*background:url( ../media/images );*/ 
 }
