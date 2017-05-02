@@ -115,6 +115,10 @@ var revealCells = function( object ){
 					//console.log("inside reveal cells if 2");	
 					nxtBlankButton.isVisible = true;
 					nxtBlankButton.innerText = nxtBlankButton.hasValue;
+					if( nxtBlankButton.hasValue === 1 )
+						nxtBlankButton.style.color = 'purple';
+					else
+						nxtBlankButton.style.color = 'green';
 					nxtBlankButton.style.background = "grey";
 				}
 				else{
@@ -239,6 +243,11 @@ var operations = function( button ){
 		else if( button.hasValue >= 1 ){
 			button.isVisible = true;
 			button.innerText = button.hasValue;
+			if( button.hasValue === 1 )
+				button.style.color = 'purple';
+			else
+				button.style.color = 'green';
+			
 			button.style.background = 'grey';
 		}
 		
