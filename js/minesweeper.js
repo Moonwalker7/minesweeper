@@ -177,6 +177,7 @@ var eventLeftAction = function( event ){
 		timer['timeout'] = setInterval( startTimer, 1000 );
 		var dStartBtn = document.getElementById( "btnStartGame" );
 		dStartBtn.style.visibility = 'visible';
+		dStartBtn.innerHTML = "<h2>" + "Restart Game" + "</h2>";
 	}
 
 	operations( button );		
@@ -198,6 +199,7 @@ var eventRightAction = function( event ){
 		timer['timeout'] = setInterval( startTimer, 1000 );
 		var dStartBtn = document.getElementById( "btnStartGame" );
 		dStartBtn.style.visibility = 'visible';
+		dStartBtn.innerHTML = "<h2>" + "Restart Game" + "</h2>";
 	}
 
 	if( ! button.isFlag ){
@@ -391,6 +393,10 @@ var setText = function( strInfo, init = 0 ){
 	if( init == 1 ){
 
 		var lstGridCoordinates = [];
+		gGame['timer']['minutes'] = 0;
+		gGame['timer']['seconds'] = 0;
+		gGame['timer']['timeout'] = 0;
+
 		var dMine = document.getElementById( "mine" );
 		dMine.innerHTML = '<img src="media/images/mines/m2.png" />' + "  " + gGame['iMinesCount'];
 
@@ -398,9 +404,6 @@ var setText = function( strInfo, init = 0 ){
 		dFlag.innerHTML = '<img src="media/images/flags/f12.png" />' + "  " + gGame['iFlagsCount'];
 
 		var dTimer = document.getElementById( "timer" );
-		gGame['timer']['minutes'] = 0;
-		gGame['timer']['seconds'] = 0;
-		gGame['timer']['timeout'] = 0;
 		timer.innerText = gGame['timer']['minutes'] + ":" + gGame['timer']['seconds'];
 	}
 
@@ -411,6 +414,7 @@ var setText = function( strInfo, init = 0 ){
 
 var setMineCount = function( row, col, level ){
 
+	console.log( "--->iLevel: " + level );
 	var iMinimumGridCells = 25;
 	var iMines = 0;
 
@@ -435,6 +439,12 @@ var startTimer = function(){
 	var timer = document.getElementById( "timer" );	
 	timer.innerText = null;
 	
+
+	if( gGame['timer']['minutes'] === 1 ){
+		setText( "Time Out!");
+		gameTerminate();
+		return;
+	}
 
 	if( gGame['timer']['seconds'] === 59 ){
 		gGame['timer']['seconds'] = 0;
@@ -525,12 +535,16 @@ var unopenedCells = function(){
 var setupGame = function( iGridSizeRows, iGridSizeCols, iLevel ){
 
 	var lstGridCoordinates = [];
-
+	console.log( "-->iLevel: " + iLevel );
+	gGame['gameOn'] = false;
 	gGame['iMaxGridCoordinateX'] = iGridSizeRows;
 	gGame['iMaxGridCoordinateY'] = iGridSizeCols;
+	gGame['iUnopenedCellCount']['iFlag'] = false;
+	gGame['iFlagsCount'] = 0;
+
 	gGame['iUnopenedCellCount']['totalCells'] = iGridSizeRows * iGridSizeCols;
 	gGame['iMinesCount'] = setMineCount( iGridSizeRows, iGridSizeCols, iLevel );
-	console.log( "mines2: " + gGame['iMinesCount']);
+	console.log( "mines: " + gGame['iMinesCount']);
 
 	lstGridCoordinates = createGrid( iGridSizeRows, iGridSizeCols );
 	plantMines( lstGridCoordinates );
@@ -543,8 +557,12 @@ var init = function(){
 
 	var iGridSizeCols = 7;
 	var iGridSizeRows = 6;
-	var iLevel = 1;
-		
+	var iLevel = -1;
+	
+	var dLevel = document.getElementById( "levelList" );
+	iLevel = parseInt( dLevel.options[dLevel.selectedIndex].value );
+	console.log( "iLevel: " + iLevel );
+
 	setupGame( iGridSizeRows, iGridSizeCols, iLevel );	
 
 	setText( "Let the game begin !", 1 );
@@ -557,16 +575,6 @@ dStartBtn.oncontextmenu = function( event ){ event.preventDefault(); }
 
 dStartBtn.onclick = function(){
 	
-	gGame['gameOn'] = false;
-	gGame['iMinesCount'] = 0;
-	gGame['iMaxGridCoordinateX'] = 0;
-	gGame['iMaxGridCoordinateY'] = 0;
-	gGame['lstGrid'] = [];
-	gGame['lstPlacedMinesLocation'] = [];
-	gGame['iUnopenedCellCount']['totalCells'] = 0;
-	gGame['iUnopenedCellCount']['iFlag'] = false;
-	gGame['iFlagsCount'] = 0;
-
 	init();
 	stopTimer();
 }
@@ -577,15 +585,10 @@ dStartBtn.click();
 Validations Part
 1. Check if invalid level given
 2. set text as per user events
-3. hide/unhide start game button
-4. check gameOn flag
 5. Add tooltip wherever needed
-6. Add flag count and its icon next to mine count
 7. Check the start and stop timer
-8. Check for unopenedcellcount()
 9. check in different browsers
 10. Add an icon in the tab
-11. Add the difficulty dropdown
 12. Loading icon
 
 */
