@@ -66,6 +66,22 @@ var plantMines = function( lstGridCoordinates ){
 	console.log( "Planted Mines" );	
 }
 
+var setNumbersAroundMines = function(){
+
+	var iLength = gGame['lstPlacedMinesLocation'].length;
+	
+	
+	for( var i = 0; i < iLength; i++ ){
+		var iMine = gGame['lstPlacedMinesLocation'][i]
+	
+		var lstNum1 = getNum1AroundMines( gGame['lstGrid'][iMine.x][iMine.y] );
+		setNumToCell( lstNum1, 1 );
+		//var lstNum2 = getNum2AroundMines( gGame['lstGrid'][iMine.x][iMine.y] );
+		//setNumToCell( lstNum2, 2 );
+	}
+}
+
+
 var gameTerminate = function( iFlag ){
 
 
@@ -101,15 +117,20 @@ var eventLeftAction = function( event ){
 		console.log( "gameOn is disabled");
 		return;
 	}
-	//console.log( "button " + button);
-	
-	if( button.isFlag ){
+	else if( button.isFlag ){
 		console.log("exiting left click function, flag is set ");
 		//setText( "Flag is already set" );
 		return;
 	}
+	
+	if( unopenedCells() === 0 ){
+		timer['timeout'] = setInterval( startTimer, 1000 );
+	}
 	else if( button.hasValue === -1 ){
 		gameTerminate( -1 );
+	}
+	else{
+		button.isVisible = true;
 	}
 }
 
@@ -122,15 +143,20 @@ var eventRightAction = function( event ){
 		console.log( "gameOn is disabled");
 		return;
 	}
+	else if( unopenedCells() === 0 ){
+		timer['timeout'] = setInterval( startTimer, 1000 );
+	}
 
 	if( ! button.isFlag ){
 		console.log( 'flag set');
 		button.isFlag = true;
+		button.isVisible = false;
 		//button.style.background = "cyan";
 		button.innerHTML = '<img src="media/images/flags/f5.png" />';
 	}
 	else{
 		button.isFlag = false;
+		button.isVisible = true;
 		button.style.background = null;
 		button.innerHTML = null
 		console.log( 'flag unset');
@@ -171,6 +197,63 @@ var getRandomNum = function( max ){
 	var iMax = Math.floor( max );
 
 	return Math.floor( Math.random() * (iMax - iMin)) + iMin;
+}
+
+var getNum1AroundMines = function( button ){
+	
+	var lstPatterns = new Array( [0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [-1, 1], [1, -1], [1, 1] );
+	var iLength = lstPatterns.length;
+	var lstValidCells1 = new Array();
+	
+    var buttonX = button.x;
+    var buttonY = button.y;
+
+	for( var iLocation = 0; iLocation < iLength; iLocation++ ){
+		var iX = lstPatterns[iLocation][0] + buttonX;
+		var iY = lstPatterns[iLocation][1] + buttonY;
+
+		//console.log( "--> "+lstPatterns[iLocation][0] + " " + button.x + " " + iX );
+		//console.log( "<-- "+lstPatterns[iLocation][1] + " " + button.y + " " + iY );
+                    //console.log("-------------------------------")
+                    //console.log("X,Y--> "+buttonX+" "+buttonY);
+                    //console.log("--> "+lstPatterns[iLocation][0]+" "+lstPatterns[iLocation][1]);
+                    //console.log("buttuon--> "+iX+" "+iY);
+		if( isValidCell( iX, iY ) ){
+			//console.log("valid :"+iX+" "+iY);
+			var button = gGame['lstGrid'][iX][iY];
+			//console.log( button );
+			if( button.hasValue !== -1 ){
+				lstValidCells1.push( button );//new Array(iX, iY) );
+				//console.log( iX + " " + iY );
+			}
+
+		}
+
+	}
+	/*
+	var iRandmThreshold = Math.ceil( 1/3  * lstValidCells1.length );
+	for( var iCounter = 0; iCounter < iRandmThreshold; iCounter++ ){
+		var iRandomIndex = getRandomInt( lstValidCells2.length );
+		var iLocation = lstValidCells2[iRandomIndex];
+		console.log( iLocation );
+		lstRandomValidCells2.push( iLocation );
+		lstValidCells2.splice( iRandomIndex, 1 );
+	}
+	*/
+	return lstValidCells1;
+}
+
+var setNumToCell = function( lstNum, iNum ){
+
+	//console.log( "in set Num to cell " +  iNum);
+
+	for( var i in lstNum ){
+		var button = lstNum[i];
+		button.hasValue = iNum;
+		button.innerHTML = iNum;
+		button.style.color = 'purple';
+		console.log("Num set at: " + button.x + " " + button.y );
+	}
 }
 
 var setText = function( strInfo, init = 0 ){
@@ -273,24 +356,47 @@ var getNode = function ( target, nodeName ){
 	return target;
 }
 
+var unopenedCells = function(){
+	
+	var iCount = 0;
+
+	for( var i = 0; i < gGame['iMaxGridCoordinateX']; i++ ){
+
+		for( var j = 0; j < gGame['iMaxGridCoordinateY']; j++ ){
+			var obj = gGame['lstGrid'][i][j].isVisible; //|| 'false';
+			console.log( "--->obj: " + obj );
+			if(  obj === true ){
+				console.log( "obj: " + obj );
+				iCount += 1;	
+			}
+		}
+	}
+	console.log( "Visible: " + iCount );
+	return iCount;
+}
 //Init Function
 
 var init = function(){
 
-	var iGridSizeCol = 5;
-	var iGridSizeRow = 5;
+	var iGridSizeCols = 5;
+	var iGridSizeRows = 5;
 	
-
-	timer['timeout'] = setInterval( startTimer, 1000 );
+	gGame['iMaxGridCoordinateX'] = iGridSizeRows;
+	gGame['iMaxGridCoordinateY'] = iGridSizeCols;
+	gGame['iUnopenedCellCount'] = iGridSizeRows * iGridSizeCols;
+	
 	var iLevel = 1;
-	gGame['iMinesCount'] = setMineCount( iGridSizeRow, iGridSizeCol, iLevel );
+	gGame['iMinesCount'] = setMineCount( iGridSizeRows, iGridSizeCols, iLevel );
 	
 
-	lstGridCoordinates = createGrid( iGridSizeRow, iGridSizeCol );
+	lstGridCoordinates = createGrid( iGridSizeRows, iGridSizeCols );
 	plantMines( lstGridCoordinates );
 	showMines();
+	setNumbersAroundMines();
+
 	setText( "Let the game begin !", 1 );
 	gGame['gameOn'] = true;
+	//unopenedCells();
 }
 
 init();

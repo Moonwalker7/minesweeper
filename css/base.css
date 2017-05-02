@@ -38,7 +38,15 @@
 	cursor: pointer;
 	font-weight: bolder;
 	text-align: center;
-	margin: 1px;
+	margin: 2px;
+	padding: 0px;
+	font-size: 50px;
 
 	/*background:url( ../media/images );*/ 
+}
+
+#dGrid button:hover, #dGrid button:focus {
+	background: #356094;
+	/*border: solid 1px #2A4E77;
+	*/text-decoration: none;
 }
