@@ -182,6 +182,7 @@ var eventLeftAction = function( event ){
 		var dStartBtn = document.getElementById( "btnStartGame" );
 		dStartBtn.style.visibility = 'visible';
 		dStartBtn.innerHTML = "<h2>" + "Restart Game" + "</h2>";
+		gGame['iUnopenedCellCount']['iFlag'] = true;
 	}
 
 	operations( button );		
@@ -203,6 +204,7 @@ var eventRightAction = function( event ){
 		timer['timeout'] = setInterval( startTimer, 1000 );
 		var dStartBtn = document.getElementById( "btnStartGame" );
 		dStartBtn.style.visibility = 'visible';
+		gGame['iUnopenedCellCount']['iFlag'] = true;
 		dStartBtn.innerHTML = "<h2>" + "Restart Game" + "</h2>";
 	}
 
@@ -573,9 +575,10 @@ var init = function(){
 	console.log( "iLevel: " + iLevel );
 
 	setupGame( iGridSizeRows, iGridSizeCols, iLevel );	
-
+	showMines();
 	setText( "Let the game begin !", 1 );
 	dStartBtn.style.visibility = 'hidden';
+	gGame['iUnopenedCellCount']['iFlag'] = false;
 	gGame['gameOn'] = true;
 }
 
@@ -596,7 +599,6 @@ Validations Part
 2. set text as per user events
 5. Add tooltip wherever needed
 7. Check the start and stop timer
-9. check in different browsers
 10. Add an icon in the tab
 12. Loading icon
 
