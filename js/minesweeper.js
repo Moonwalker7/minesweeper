@@ -157,6 +157,7 @@ var gameTerminate = function( iFlag = -2 ){
 		//button.style.background = 'yellow';//same as above
 		setText("Game Won :)");
 	}
+	console.clear();
 }
 
 //Event Functions
@@ -451,7 +452,7 @@ var startTimer = function(){
 	timer.innerText = null;
 	
 
-	if( gGame['timer']['minutes'] === 1 ){
+	if( gGame['timer']['minutes'] === 10 ){
 		setText( "Time Out!");
 		gameTerminate();
 		return;
@@ -486,7 +487,7 @@ var isValidCell = function( x, y ){
 		}	
 	}
 	catch( TypeError ){
-		console.log( "TypeError: " + x + " " + y);
+		//console.log( "TypeError: " + x + " " + y);
 	}
 
 	return false;
@@ -504,15 +505,19 @@ var showMines = function( iFlag = null ){
 		if( iFlag === -1 ){
 			button.style.background = "red";
 		}
-		else{
+		else if( iFlag === 0 ){
 			button.style.background = "blue";	
 		}
-		
+		else{
+			button.style.background = "green";	
+		}
+
 		button.innerHTML = '<img src="media/images/mines/m2.png" />';
 		
 		//button.innerText = "#";
-	}
+	}	
 }
+
 
 var getNode = function ( target, nodeName ){
 
@@ -578,7 +583,6 @@ var init = function(){
 	showMines();
 	setText( "Let the game begin !", 1 );
 	dStartBtn.style.visibility = 'hidden';
-	gGame['iUnopenedCellCount']['iFlag'] = false;
 	gGame['gameOn'] = true;
 }
 
@@ -594,8 +598,6 @@ dStartBtn.onclick = function(){
 dStartBtn.click();
 
 /*
-Validations Part
-1. Check if invalid level given
 2. set text as per user events
 5. Add tooltip wherever needed
 7. Check the start and stop timer
