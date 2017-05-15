@@ -73,17 +73,7 @@ var plantMines = function( lstGridCoordinates ){
 
 var setNumbersAroundMines = function(){
 
-	var iLength = gGame['lstPlacedMinesLocation'].length;
-	
-	
-	for( var i = 0; i < iLength; i++ ){
-		var iMine = gGame['lstPlacedMinesLocation'][i]
-	
-		var lstNum1 = getNum1AroundMines( gGame['lstGrid'][iMine.x][iMine.y] );
-		setNumToCell( lstNum1, 1 );
-		var lstNum2 = getNum2AroundMines( gGame['lstGrid'][iMine.x][iMine.y] );
-		setNumToCell( lstNum2, 2 );
-	}
+	//ToDo
 }
 
 var revealCells = function( object ){
@@ -298,108 +288,6 @@ var getRandomNum = function( max ){
 	return Math.floor( Math.random() * (iMax - iMin)) + iMin;
 }
 
-var getNum1AroundMines = function( button ){
-	
-	var lstPatterns = new Array( [0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [-1, 1], [1, -1], [1, 1] );
-	var iLength = lstPatterns.length;
-	var lstValidCells1 = new Array();
-	
-    var buttonX = button.x;
-    var buttonY = button.y;
-
-	for( var iLocation = 0; iLocation < iLength; iLocation++ ){
-		var iX = lstPatterns[iLocation][0] + buttonX;
-		var iY = lstPatterns[iLocation][1] + buttonY;
-
-		//console.log( "--> "+lstPatterns[iLocation][0] + " " + button.x + " " + iX );
-		//console.log( "<-- "+lstPatterns[iLocation][1] + " " + button.y + " " + iY );
-                    //console.log("-------------------------------")
-                    //console.log("X,Y--> "+buttonX+" "+buttonY);
-                    //console.log("--> "+lstPatterns[iLocation][0]+" "+lstPatterns[iLocation][1]);
-                    //console.log("buttuon--> "+iX+" "+iY);
-		if( isValidCell( iX, iY ) ){
-			//console.log("valid :"+iX+" "+iY);
-			var button = gGame['lstGrid'][iX][iY];
-			//console.log( button );
-			if( button.hasValue !== -1 ){
-				lstValidCells1.push( button );//new Array(iX, iY) );
-				//console.log( iX + " " + iY );
-			}
-
-		}
-
-	}
-	/*
-	var iRandmThreshold = Math.ceil( 1/3  * lstValidCells1.length );
-	for( var iCounter = 0; iCounter < iRandmThreshold; iCounter++ ){
-		var iRandomIndex = getRandomInt( lstValidCells2.length );
-		var iLocation = lstValidCells2[iRandomIndex];
-		console.log( iLocation );
-		lstRandomValidCells2.push( iLocation );
-		lstValidCells2.splice( iRandomIndex, 1 );
-	}
-	*/
-	return lstValidCells1;
-}
-
-var getNum2AroundMines = function( button ){
-	
-	var lstPatterns = new Array( [-2, 0], [-1, -1], [0, -2], [1, -1], [2, 0], [1, 1], [0, 2], [-1, 1] );
-	var iLength = lstPatterns.length;
-	var lstValidCells2 = new Array();
-	var lstRandomValidCells2 = new Array();
-    var buttonX= button.x;
-    var buttonY= button.y;
-
-	for( var iLocation = 0; iLocation < iLength; iLocation++ ){
-		var iX = lstPatterns[iLocation][0] + buttonX;
-		var iY = lstPatterns[iLocation][1] + buttonY;
-
-		//console.log( "--> "+lstPatterns[iLocation][0] + " " + button.x + " " + iX );
-		//console.log( "<-- "+lstPatterns[iLocation][1] + " " + button.y + " " + iY );
-                    //console.log("-------------------------------")
-                    //console.log("X,Y--> "+buttonX+" "+buttonY);
-                    //console.log("--> "+lstPatterns[iLocation][0]+" "+lstPatterns[iLocation][1]);
-                    //console.log("buttuon--> "+iX+" "+iY);
-		if( isValidCell( iX, iY ) ){
-			//console.log("valid :"+iX+" "+iY);
-			var button = gGame['lstGrid'][iX][iY];
-			//console.log( button );
-			if( button.hasValue !== -1 ){
-				lstValidCells2.push( button );//new Array(iX, iY) );
-				//console.log( iX + " " + iY );
-			}
-
-		}
-
-	}
-
-	var iRandmThreshold = Math.ceil( 1/3  * lstValidCells2.length );
-	for( var iCounter = 0; iCounter < iRandmThreshold; iCounter++ ){
-		var iRandomIndex = getRandomNum( lstValidCells2.length );
-		var iLocation = lstValidCells2[iRandomIndex];
-		//console.log( iLocation );
-		lstRandomValidCells2.push( iLocation );
-		lstValidCells2.splice( iRandomIndex, 1 );
-	}
-
-	return lstRandomValidCells2;
-}
-
-var setNumToCell = function( lstNum, iNum ){
-
-	//console.log( "in set Num to cell " +  iNum);
-	//var colorArray = [ "purple", "blue", "orange"];
-
-	for( var i in lstNum ){
-		var button = lstNum[i];
-		button.hasValue = iNum;
-		//button.innerHTML = iNum;
-		//button.style.color = colorArray[iNum-1];
-		//console.log("Num set at: " + button.x + " " + button.y );
-	}
-}
-
 var setText = function( strInfo, init = 0 ){
 
 	if( init == 1 ){
@@ -603,5 +491,118 @@ dStartBtn.click();
 7. Check the start and stop timer
 10. Add an icon in the tab
 12. Loading icon
+
+*/
+
+
+/*
+setNumAroundMines ( N steps from a mine)
+var setNumbersAroundMines = function(){
+
+	var iLength = gGame['lstPlacedMinesLocation'].length;
+	
+	
+	for( var i = 0; i < iLength; i++ ){
+		var iMine = gGame['lstPlacedMinesLocation'][i]
+	
+		var lstNum1 = getNum1AroundMines( gGame['lstGrid'][iMine.x][iMine.y] );
+		setNumToCell( lstNum1, 1 );
+		var lstNum2 = getNum2AroundMines( gGame['lstGrid'][iMine.x][iMine.y] );
+		setNumToCell( lstNum2, 2 );
+	}
+}
+
+var getNum1AroundMines = function( button ){
+	
+	var lstPatterns = new Array( [0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [-1, 1], [1, -1], [1, 1] );
+	var iLength = lstPatterns.length;
+	var lstValidCells1 = new Array();
+	
+    var buttonX = button.x;
+    var buttonY = button.y;
+
+	for( var iLocation = 0; iLocation < iLength; iLocation++ ){
+		var iX = lstPatterns[iLocation][0] + buttonX;
+		var iY = lstPatterns[iLocation][1] + buttonY;
+
+		//console.log( "--> "+lstPatterns[iLocation][0] + " " + button.x + " " + iX );
+		//console.log( "<-- "+lstPatterns[iLocation][1] + " " + button.y + " " + iY );
+                    //console.log("-------------------------------")
+                    //console.log("X,Y--> "+buttonX+" "+buttonY);
+                    //console.log("--> "+lstPatterns[iLocation][0]+" "+lstPatterns[iLocation][1]);
+                    //console.log("buttuon--> "+iX+" "+iY);
+		if( isValidCell( iX, iY ) ){
+			//console.log("valid :"+iX+" "+iY);
+			var button = gGame['lstGrid'][iX][iY];
+			//console.log( button );
+			if( button.hasValue !== -1 ){
+				lstValidCells1.push( button );//new Array(iX, iY) );
+				//console.log( iX + " " + iY );
+			}
+
+		}
+
+	}
+	
+	return lstValidCells1;
+}
+
+var getNum2AroundMines = function( button ){
+	
+	var lstPatterns = new Array( [-2, 0], [-1, -1], [0, -2], [1, -1], [2, 0], [1, 1], [0, 2], [-1, 1] );
+	var iLength = lstPatterns.length;
+	var lstValidCells2 = new Array();
+	var lstRandomValidCells2 = new Array();
+    var buttonX= button.x;
+    var buttonY= button.y;
+
+	for( var iLocation = 0; iLocation < iLength; iLocation++ ){
+		var iX = lstPatterns[iLocation][0] + buttonX;
+		var iY = lstPatterns[iLocation][1] + buttonY;
+
+		//console.log( "--> "+lstPatterns[iLocation][0] + " " + button.x + " " + iX );
+		//console.log( "<-- "+lstPatterns[iLocation][1] + " " + button.y + " " + iY );
+                    //console.log("-------------------------------")
+                    //console.log("X,Y--> "+buttonX+" "+buttonY);
+                    //console.log("--> "+lstPatterns[iLocation][0]+" "+lstPatterns[iLocation][1]);
+                    //console.log("buttuon--> "+iX+" "+iY);
+		if( isValidCell( iX, iY ) ){
+			//console.log("valid :"+iX+" "+iY);
+			var button = gGame['lstGrid'][iX][iY];
+			//console.log( button );
+			if( button.hasValue !== -1 ){
+				lstValidCells2.push( button );//new Array(iX, iY) );
+				//console.log( iX + " " + iY );
+			}
+
+		}
+
+	}
+
+	var iRandmThreshold = Math.ceil( 1/3  * lstValidCells2.length );
+	for( var iCounter = 0; iCounter < iRandmThreshold; iCounter++ ){
+		var iRandomIndex = getRandomNum( lstValidCells2.length );
+		var iLocation = lstValidCells2[iRandomIndex];
+		//console.log( iLocation );
+		lstRandomValidCells2.push( iLocation );
+		lstValidCells2.splice( iRandomIndex, 1 );
+	}
+
+	return lstRandomValidCells2;
+}
+
+var setNumToCell = function( lstNum, iNum ){
+
+	//console.log( "in set Num to cell " +  iNum);
+	//var colorArray = [ "purple", "blue", "orange"];
+
+	for( var i in lstNum ){
+		var button = lstNum[i];
+		button.hasValue = iNum;
+		//button.innerHTML = iNum;
+		//button.style.color = colorArray[iNum-1];
+		//console.log("Num set at: " + button.x + " " + button.y );
+	}
+}
 
 */
