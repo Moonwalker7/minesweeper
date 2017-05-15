@@ -72,8 +72,43 @@ var plantMines = function( lstGridCoordinates ){
 }
 
 var setNumbersAroundMines = function(){
+	var lstPatterns = new Array( [0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [-1, 1], [1, -1], [1, 1] );
+	var iLength = lstPatterns.length;
 
-	//ToDo
+	for( var x = 0; x < gGame['iMaxGridCoordinateX']; x++ ){
+
+		for( var y = 0; y < gGame['iMaxGridCoordinateY']; y++ ){
+
+			var iCell = gGame['lstGrid'][x][y];
+
+			console.log( iCell.x + " " + iCell.y);
+
+			var iValid = 0;
+			var iMinesAround = 0;
+			for( var iLocation = 0; iLocation < iLength; iLocation++ ){
+				var iX = lstPatterns[iLocation][0] + iCell.x
+				var iY = lstPatterns[iLocation][1] + iCell.y;
+
+				if( isValidCell( iX, iY ) ){
+					//console.log("valid :"+iX+" "+iY);
+					var button = gGame['lstGrid'][iX][iY];
+					iValid += 1;
+					//console.log("iValid: " + iValid);
+					if( button.hasValue === -1 ){
+						//lstValidCells1.push( button );//new Array(iX, iY) );
+						console.log( "Mine at: " +iX + " " + iY );
+						iMinesAround += 1;
+						console.log( "Mines count added" ); 
+					}
+				}
+			}
+
+			if( iMinesAround !== 0  && iCell.hasValue !== -1 ){
+				iCell.hasValue = iMinesAround;
+				//iCell.innerHTML = iMinesAround;
+			}
+		}
+	}
 }
 
 var revealCells = function( object ){
@@ -359,6 +394,8 @@ var startTimer = function(){
 }
 
 var stopTimer = function(){
+	gGame['timer']['minutes'] = 0;
+	gGame['timer']['seconds'] = 0;
 	clearInterval( timer['timeout'] );
 }
 
@@ -406,7 +443,6 @@ var showMines = function( iFlag = null ){
 	}	
 }
 
-
 var getNode = function ( target, nodeName ){
 
 	//console.log( "in getNode function");
@@ -444,6 +480,7 @@ var setupGame = function( iGridSizeRows, iGridSizeCols, iLevel ){
 	gGame['iMaxGridCoordinateX'] = iGridSizeRows;
 	gGame['iMaxGridCoordinateY'] = iGridSizeCols;
 	gGame['iUnopenedCellCount']['iFlag'] = false;
+	stopTimer();
 	gGame['iFlagsCount'] = 0;
 
 	gGame['iUnopenedCellCount']['totalCells'] = iGridSizeRows * iGridSizeCols;
@@ -465,10 +502,10 @@ var init = function(){
 	
 	var dLevel = document.getElementById( "levelList" );
 	iLevel = parseInt( dLevel.options[dLevel.selectedIndex].value );
-	console.log( "iLevel: " + iLevel );
+	console.log( "Game Difficulty Level Selected: " + iLevel );
 
 	setupGame( iGridSizeRows, iGridSizeCols, iLevel );	
-	showMines();
+	//showMines();
 	setText( "Let the game begin !", 1 );
 	dStartBtn.style.visibility = 'hidden';
 	gGame['gameOn'] = true;
