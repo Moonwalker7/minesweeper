@@ -465,18 +465,37 @@ var unopenedCells = function(){
 	return iCount;
 }
 
-var setupGame = function( iGridSizeRows, iGridSizeCols, iLevel ){
+var setupGame = function( iLevel ){
 
 	var lstGridCoordinates = [];
+	var iGridSizeCols = 0;
+	var iGridSizeRows = 0;
+
 	console.log( "-->iLevel: " + iLevel );
+
 	gGame['gameOn'] = false;
-	gGame['iMaxGridCoordinateX'] = iGridSizeRows;
-	gGame['iMaxGridCoordinateY'] = iGridSizeCols;
 	gGame['iUnopenedCellCount']['iFlag'] = false;
-	stopTimer();
 	gGame['iFlagsCount'] = 0;
 
+	stopTimer();
+	
+	if( iLevel === 1 ){
+		iGridSizeCols = 7;
+		iGridSizeRows = 7;
+	}
+	else if( iLevel === 2 ){
+		iGridSizeCols = 9;
+		iGridSizeRows = 9;
+	}
+	else if( iLevel === 3 ){
+		iGridSizeCols = 11;
+		iGridSizeRows = 11;
+	}
+
+	gGame['iMaxGridCoordinateX'] = iGridSizeRows;
+	gGame['iMaxGridCoordinateY'] = iGridSizeCols;
 	gGame['iUnopenedCellCount']['totalCells'] = iGridSizeRows * iGridSizeCols;
+	
 	gGame['iMinesCount'] = setMineCount( iGridSizeRows, iGridSizeCols, iLevel );
 	console.log( "mines: " + gGame['iMinesCount']);
 
@@ -489,19 +508,16 @@ var setupGame = function( iGridSizeRows, iGridSizeCols, iLevel ){
 
 var init = function(){
 
-	var iGridSizeCols = 7;
-	var iGridSizeRows = 6;
-	var iLevel = -1;
+	var iLevel = 1;
 	
 	var dLevel = document.getElementById( "levelList" );
 	iLevel = parseInt( dLevel.options[dLevel.selectedIndex].value );
-	console.log( "Game Difficulty Level Selected: " + iLevel );
-	console.clear();
-	setupGame( iGridSizeRows, iGridSizeCols, iLevel );	
+
+	setupGame( iLevel );	
 	//showMines();
 	setText( "Let the game begin !", 1 );
 	dStartBtn.style.visibility = 'hidden';
-	
+
 	gGame['gameOn'] = true;
 }
 
